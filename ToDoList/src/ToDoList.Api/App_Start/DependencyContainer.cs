@@ -8,28 +8,31 @@ using ToDoList.Domain.Queries;
 
 namespace ToDoList.Api
 {
-    public static partial class WebApiConfig
+    public class DependencyContainer
     {
-        public class DependencyContainer
+        private readonly Container _container = new Container();
+
+        public void RegisterDependencies()
         {
-            private readonly Container _container = new Container();
+            //Services
+            _container.Register<ICacheAccessor, CacheAccessor>(Lifestyle.Singleton);
 
-            public void RegisterDependencies()
-            {
-                _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+            // Query Handlers
+            _container.Register(typeof(IAsyncQueryHandler<,>), typeof(AllToDoListsQueryHandler).Assembly);
 
-                //Services
-                _container.Register<ICacheAccessor, CacheAccessor>(Lifestyle.Singleton);
+            _container.Verify();
 
-                // Query Handlers
-                _container.Register(typeof(IAsyncQueryHandler<,>), typeof(AllToDoListsQueryHandler).Assembly);
+        }
 
-                _container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+        public void SetupConatiner()
+        {
+            _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-                _container.Verify();
+            RegisterDependencies();
 
-                GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(_container);
-            }
+            _container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+
+            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(_container);
         }
     }
 }
