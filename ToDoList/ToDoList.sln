@@ -13,7 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Domain", "src\ToDo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Api.Tests", "tests\TodoList.Api.Tests\TodoList.Api.Tests.csproj", "{2849475F-752A-4F51-9D0F-85FF4C68B137}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Infrstructure", "src\ToDoList.Infrstructure\ToDoList.Infrstructure.csproj", "{3848289E-B171-4A2A-85A3-7D7D321D7161}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Cache", "src\ToDoList.Cache\ToDoList.Cache.csproj", "{3848289E-B171-4A2A-85A3-7D7D321D7161}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoLists.Cache.Tests", "tests\ToDoLists.Cache.Tests\ToDoLists.Cache.Tests.csproj", "{66AEB463-EE7C-419A-9F18-B010A6FE7B1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{3848289E-B171-4A2A-85A3-7D7D321D7161}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3848289E-B171-4A2A-85A3-7D7D321D7161}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3848289E-B171-4A2A-85A3-7D7D321D7161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66AEB463-EE7C-419A-9F18-B010A6FE7B1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66AEB463-EE7C-419A-9F18-B010A6FE7B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66AEB463-EE7C-419A-9F18-B010A6FE7B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66AEB463-EE7C-419A-9F18-B010A6FE7B1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{D3A1DC1C-A966-45A2-A1AD-22572AD48B45} = {898B064F-973B-470D-A72B-618B3DA6663E}
 		{2849475F-752A-4F51-9D0F-85FF4C68B137} = {2EC80744-529E-4E92-B65F-0867D64F49EB}
 		{3848289E-B171-4A2A-85A3-7D7D321D7161} = {898B064F-973B-470D-A72B-618B3DA6663E}
+		{66AEB463-EE7C-419A-9F18-B010A6FE7B1F} = {2EC80744-529E-4E92-B65F-0867D64F49EB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5F1C64D-9727-4740-8F75-C08ECC96A88B}

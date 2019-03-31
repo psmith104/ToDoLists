@@ -109,6 +109,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ToDoList.Cache\ToDoList.Cache.csproj">
+      <Project>{3848289E-B171-4A2A-85A3-7D7D321D7161}</Project>
+      <Name>ToDoList.Cache</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ToDoList.Domain\ToDoList.Domain.csproj">
       <Project>{D3A1DC1C-A966-45A2-A1AD-22572AD48B45}</Project>
       <Name>ToDoList.Domain</Name>
