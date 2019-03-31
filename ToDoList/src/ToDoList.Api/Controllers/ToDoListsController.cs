@@ -44,9 +44,6 @@ namespace ToDoList.Api.Controllers
         {
         }
 
-        private class AllToDoListQuery : IAllToDoListsQuery
-        {
-
-        }
+        private class AllToDoListQuery : IAllToDoListsQuery { }
     }
 }
