@@ -5,11 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using ToDoList.Cache.CommandHandlers;
 using ToDoList.Cache.Helpers;
-using ToDoList.Cache.QueryHandlers;
+using ToDoList.Cache.Models;
 using ToDoList.Cache.Services;
 using ToDoList.Domain.Commands;
-using ToDoList.Domain.Models;
-using ToDoList.Domain.Queries;
 
 namespace ToDoLists.Cache.Tests.CommandHandlers
 {
@@ -25,7 +23,7 @@ namespace ToDoLists.Cache.Tests.CommandHandlers
                 var passedGetKey = (string) null;
                 var passedSetKey = (string) null;
                 var passedObject = (object) null;
-                var lists = new List<IToDoList> { Mock.Of<IToDoList>() };
+                var lists = new List<ToDoListModel> { Mock.Of<ToDoListModel>() };
                 var cacheAccessor = Mock.Of<ICacheAccessor>();
                 Mock.Get(cacheAccessor)
                     .Setup(accessor => accessor.Get(It.IsAny<string>()))
@@ -54,7 +52,7 @@ namespace ToDoLists.Cache.Tests.CommandHandlers
                 var passedGetKey = (string)null;
                 var passedSetKey = (string)null;
                 var passedObject = (object)null;
-                var lists = new List<IToDoList> { Mock.Of<IToDoList>(list => list.Id == 1) };
+                var lists = new List<ToDoListModel> { Mock.Of<ToDoListModel>(list => list.Id == 1) };
                 var cacheAccessor = Mock.Of<ICacheAccessor>();
                 Mock.Get(cacheAccessor)
                     .Setup(accessor => accessor.Get(It.IsAny<string>()))

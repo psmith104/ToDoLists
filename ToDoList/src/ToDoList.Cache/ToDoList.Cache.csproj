@@ -40,8 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandlers\AddToDoListCommandHandler.cs" />
-    <Compile Include="CommandHandlers\UpdateToDoListCommand.cs" />
+    <Compile Include="CommandHandlers\UpdateToDoListCommandHandler.cs" />
     <Compile Include="Helpers\CacheKeys.cs" />
+    <Compile Include="Models\ToDoListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryHandlers\AllToDoListsQueryHandler.cs" />
     <Compile Include="QueryHandlers\IToDoList.cs" />

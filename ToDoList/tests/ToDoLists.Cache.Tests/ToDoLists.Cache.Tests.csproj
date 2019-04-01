@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandlers\UpdateToDoListCommandHandlerTests.cs" />
     <Compile Include="CommandHandlers\AddToDoListCommandHandlerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryHandlers\ToDoListByIdQueryHandlerTests.cs" />

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ToDoList.Cache.Helpers;
 using ToDoList.Cache.Models;
@@ -11,21 +9,20 @@ using ToDoList.Domain.Models;
 
 namespace ToDoList.Cache.CommandHandlers
 {
-    public class AddToDoListCommandHandler : IAsyncCommandHandler<IAddToDoListCommand>
+    public class UpdateToDoListCommandHandler : IAsyncCommandHandler<IUpdateToDoListCommand>
     {
         private readonly ICacheAccessor _cacheAccessor;
 
-        public AddToDoListCommandHandler(ICacheAccessor cacheAccessor)
+        public UpdateToDoListCommandHandler(ICacheAccessor cacheAccessor)
         {
             _cacheAccessor = cacheAccessor;
         }
 
-        public Task HandleAsync(IAddToDoListCommand command)
+        public Task HandleAsync(IUpdateToDoListCommand command)
         {
             var lists = (IList<ToDoListModel>)_cacheAccessor.Get(CacheKeys.ToDoLists);
-            var maxId = lists.Max(list => list.Id);
-            lists.Add(new ToDoListModel(maxId + 1, command.Name));
-            _cacheAccessor.Set(CacheKeys.ToDoLists, lists);
+            var listToUpdate = lists.Single(list => list.Id.Equals(command.Id));
+            listToUpdate.Name = command.Name;
             return Task.FromResult(0);
         }
     }
