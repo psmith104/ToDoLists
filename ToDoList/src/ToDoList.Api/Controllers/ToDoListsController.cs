@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ToDoList.Api.Requests;
@@ -15,16 +14,19 @@ namespace ToDoList.Api.Controllers
         private readonly IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> _toDoListByIdQueryHandler;
         private readonly IAsyncCommandHandler<IAddToDoListCommand> _addListCommandHandler;
         private readonly IAsyncCommandHandler<IUpdateToDoListCommand> _updateListCommandHandler;
+        private readonly IAsyncCommandHandler<IDeleteToDoListCommand> _deleteListCommandHandler;
 
         public ToDoListsController(IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> allToDoListsQueryHandler,
             IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler,
             IAsyncCommandHandler<IAddToDoListCommand> addListCommandHandler,
-            IAsyncCommandHandler<IUpdateToDoListCommand> updateListCommandHandler)
+            IAsyncCommandHandler<IUpdateToDoListCommand> updateListCommandHandler,
+            IAsyncCommandHandler<IDeleteToDoListCommand> deleteListCommandHandler)
         {
             _allToDoListsQueryHandler = allToDoListsQueryHandler;
             _toDoListByIdQueryHandler = toDoListByIdQueryHandler;
             _addListCommandHandler = addListCommandHandler;
             _updateListCommandHandler = updateListCommandHandler;
+            _deleteListCommandHandler = deleteListCommandHandler;
 
         }
 
@@ -63,9 +65,15 @@ namespace ToDoList.Api.Controllers
             return Ok();
         }
 
-        // DELETE: api/ToDoLists/5
-        public void Delete(int id)
+        [HttpDelete]
+        [Route("api/ToDoLists/{id}")]
+        public async Task<IHttpActionResult> DeleteAsync(int id)
         {
+            var list = await _toDoListByIdQueryHandler.HandleAsync(new ToDoListByIdQuery(id)).ConfigureAwait(false);
+            if (list == null) return BadRequest("Could not retrieve requested To Do List");
+
+            await _deleteListCommandHandler.HandleAsync(new DeleteToDoListCommand(id)).ConfigureAwait(false);
+            return Ok();
         }
 
         private class AllToDoListQuery : IAllToDoListsQuery { }
@@ -92,6 +100,14 @@ namespace ToDoList.Api.Controllers
             }
         }
 
+        private class DeleteToDoListCommand : IDeleteToDoListCommand
+        {
+            public int Id { get; }
 
+            public DeleteToDoListCommand(int id)
+            {
+                Id = id;
+            }
+        }
     }
 }
