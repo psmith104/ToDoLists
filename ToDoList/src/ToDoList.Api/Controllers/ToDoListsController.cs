@@ -14,14 +14,17 @@ namespace ToDoList.Api.Controllers
         private readonly IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> _allToDoListsQueryHandler;
         private readonly IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> _toDoListByIdQueryHandler;
         private readonly IAsyncCommandHandler<IAddToDoListCommand> _addListCommandHandler;
+        private readonly IAsyncCommandHandler<IUpdateToDoListCommand> _updateListCommandHandler;
 
         public ToDoListsController(IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> allToDoListsQueryHandler,
             IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler,
-            IAsyncCommandHandler<IAddToDoListCommand> addListCommandHandler)
+            IAsyncCommandHandler<IAddToDoListCommand> addListCommandHandler,
+            IAsyncCommandHandler<IUpdateToDoListCommand> updateListCommandHandler)
         {
             _allToDoListsQueryHandler = allToDoListsQueryHandler;
             _toDoListByIdQueryHandler = toDoListByIdQueryHandler;
             _addListCommandHandler = addListCommandHandler;
+            _updateListCommandHandler = updateListCommandHandler;
 
         }
 
@@ -49,9 +52,12 @@ namespace ToDoList.Api.Controllers
             return Ok();
         }
 
-        // PUT: api/ToDoLists/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut]
+        [Route("api/ToDoLists/{id}")]
+        public async Task<IHttpActionResult> PutAsync(int id, [FromBody]UpdateToDoListRequest request)
         {
+            await _updateListCommandHandler.HandleAsync(new UpdateToDoListCommand(id, request));
+            return Ok();
         }
 
         // DELETE: api/ToDoLists/5
@@ -70,5 +76,19 @@ namespace ToDoList.Api.Controllers
                 Id = id;
             }
         }
+
+        private class UpdateToDoListCommand : IUpdateToDoListCommand
+        {
+            public int Id { get; }
+            public string Name { get; }
+
+            public UpdateToDoListCommand(int id, UpdateToDoListRequest request)
+            {
+                Id = id;
+                Name = request.Name;
+            }
+        }
+
+
     }
 }
