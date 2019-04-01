@@ -29,7 +29,7 @@ namespace TodoList.Api.Tests.Controllers
                     .ReturnsAsync(items);
 
                 var controller = new ToDoListItemsController(queryHandler, Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>(),
-                    Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>());
+                    Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>(), Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>());
 
                 // Act
                 var result = ((JsonResult<IEnumerable<IToDoListItem>>)(await controller.GetAsync(1).ConfigureAwait(false))).Content;
@@ -56,7 +56,7 @@ namespace TodoList.Api.Tests.Controllers
                     .ReturnsAsync(items);
 
                 var controller = new ToDoListItemsController(Mock.Of<IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>>>(),
-                    queryHandler, Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>());
+                    queryHandler, Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>(), Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>());
 
                 // Act
                 var result = ((JsonResult<IToDoListItem>)(await controller.GetAsync(1, 2).ConfigureAwait(false))).Content;
@@ -74,6 +74,11 @@ namespace TodoList.Api.Tests.Controllers
             public async Task then_should_add_the_requested_todo_list_item_to_the_requested_list()
             {
                 // Arrange
+                var queryHandler = Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>();
+                Mock.Get(queryHandler)
+                    .Setup(handler => handler.HandleAsync(It.IsAny<IToDoListByIdQuery>()))
+                    .ReturnsAsync(Mock.Of<IToDoList>());
+
                 var passedListId = (int?)null;
                 var passedName = (string)null;
                 var commandHandler = Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>();
@@ -83,7 +88,7 @@ namespace TodoList.Api.Tests.Controllers
                     .Returns(Task.FromResult(0));
 
                 var controller = new ToDoListItemsController(Mock.Of<IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>>>(),
-                    Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>(), commandHandler);
+                    Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>(), commandHandler, queryHandler);
 
                 // Act
                 var result = await controller.PostAsync(1, new CreateToDoListItemRequest { Name = "newitem" }).ConfigureAwait(false);
@@ -92,6 +97,31 @@ namespace TodoList.Api.Tests.Controllers
                 Assert.That(result, Is.InstanceOf(typeof(OkResult)));
                 Assert.That(passedListId, Is.EqualTo(1));
                 Assert.That(passedName, Is.EqualTo("newitem"));
+            }
+
+            [Test]
+            public async Task then_should_return_a_bad_request_response_given_the_to_do_list_could_not_be_found()
+            {
+                // Arrange
+                var passedId = (int?)null;
+                var queryHandler = Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>();
+                Mock.Get(queryHandler)
+                    .Setup(handler => handler.HandleAsync(It.IsAny<IToDoListByIdQuery>()))
+                    .Callback<IToDoListByIdQuery>(query => passedId = query.Id)
+                    .ReturnsAsync((IToDoList)null);
+
+                var commandHandler = Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>();
+
+                var controller = new ToDoListItemsController(Mock.Of<IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>>>(),
+                    Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>(), commandHandler, queryHandler);
+
+                // Act
+                var result = ((BadRequestErrorMessageResult)await controller.PostAsync(1, new CreateToDoListItemRequest()).ConfigureAwait(false)).Message;
+
+                // Assert
+                Mock.Get(commandHandler).Verify(handler => handler.HandleAsync(It.IsAny<IAddToDoListItemCommand>()), Times.Never);
+                Assert.That(result, Is.EqualTo("Could not retrieve requested To Do List"));
+                Assert.That(passedId, Is.EqualTo(1));
             }
         }
     }

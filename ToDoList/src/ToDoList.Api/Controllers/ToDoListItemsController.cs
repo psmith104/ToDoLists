@@ -13,14 +13,17 @@ namespace ToDoList.Api.Controllers
         private readonly IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>> _listItemsQueryHandler;
         private readonly IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> _listItemByIdQueryHandler;
         private readonly IAsyncCommandHandler<IAddToDoListItemCommand> _addListItemCommandHandler;
+        private readonly IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> _toDoListByIdQueryHandler;
 
         public ToDoListItemsController(IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>> listItemsQueryHandler,
             IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> listItemByIdQueryHandler,
-            IAsyncCommandHandler<IAddToDoListItemCommand> addListItemCommandHandler)
+            IAsyncCommandHandler<IAddToDoListItemCommand> addListItemCommandHandler,
+            IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler)
         {
             _listItemsQueryHandler = listItemsQueryHandler;
             _listItemByIdQueryHandler = listItemByIdQueryHandler;
             _addListItemCommandHandler = addListItemCommandHandler;
+            _toDoListByIdQueryHandler = toDoListByIdQueryHandler;
         }
 
         [HttpGet]
@@ -43,8 +46,21 @@ namespace ToDoList.Api.Controllers
         [Route("api/ToDoLists/{listId}/Items")]
         public async Task<IHttpActionResult> PostAsync(int listId, CreateToDoListItemRequest request)
         {
+            var list = await _toDoListByIdQueryHandler.HandleAsync(new ToDoListByIdQuery(listId)).ConfigureAwait(false);
+            if (list == null) return BadRequest("Could not retrieve requested To Do List");
+
             await _addListItemCommandHandler.HandleAsync(new AddToDoListItemCommand(listId, request)).ConfigureAwait(false);
             return Ok();
+        }
+
+        private class ToDoListByIdQuery : IToDoListByIdQuery
+        {
+            public int Id { get; }
+
+            public ToDoListByIdQuery(int id)
+            {
+                Id = id;
+            }
         }
 
         private class ToDoListItemsQuery : IToDoListItemsQuery
