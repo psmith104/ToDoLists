@@ -46,6 +46,7 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\IAsyncCommandHandler.cs" />
     <Compile Include="Commands\IDeleteToDoListCommand.cs" />
+    <Compile Include="Commands\IDeleteToDoListItemCommand.cs" />
     <Compile Include="Commands\IUpdateToDoListCommand.cs" />
     <Compile Include="Commands\IUpdateToDoListItemCommand.cs" />
     <Compile Include="Models\IToDoList.cs" />

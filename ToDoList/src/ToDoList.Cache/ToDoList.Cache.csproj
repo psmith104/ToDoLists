@@ -42,6 +42,7 @@
     <Compile Include="CommandHandlers\AddToDoListCommandHandler.cs" />
     <Compile Include="CommandHandlers\AddToDoListItemCommandHandler.cs" />
     <Compile Include="CommandHandlers\DeleteToDoListCommandHandler.cs" />
+    <Compile Include="CommandHandlers\DeleteToDoListItemCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateToDoListCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateToDoListItemCommandHandler.cs" />
     <Compile Include="Helpers\CacheKeys.cs" />
