@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
+using ToDoList.Api.Filters;
 
 namespace ToDoList.Api
 {
@@ -12,6 +13,8 @@ namespace ToDoList.Api
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configuration.Filters.Add(new CheckModelForNullActionFilter());
+            GlobalConfiguration.Configuration.Filters.Add(new ValidateModelStateActionFilter());
         }
     }
 }
