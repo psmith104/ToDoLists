@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using ToDoList.Api.Controllers;
+using ToDoList.Api.Requests;
+using ToDoList.Domain.Commands;
 using ToDoList.Domain.Models;
 using ToDoList.Domain.Queries;
 
@@ -26,7 +28,8 @@ namespace TodoList.Api.Tests.Controllers
                     .Callback<IToDoListItemsQuery>(query => passedId = query.ListId)
                     .ReturnsAsync(items);
 
-                var controller = new ToDoListItemsController(queryHandler, Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>());
+                var controller = new ToDoListItemsController(queryHandler, Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>(),
+                    Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>());
 
                 // Act
                 var result = ((JsonResult<IEnumerable<IToDoListItem>>)(await controller.GetAsync(1).ConfigureAwait(false))).Content;
@@ -53,7 +56,7 @@ namespace TodoList.Api.Tests.Controllers
                     .ReturnsAsync(items);
 
                 var controller = new ToDoListItemsController(Mock.Of<IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>>>(),
-                    queryHandler);
+                    queryHandler, Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>());
 
                 // Act
                 var result = ((JsonResult<IToDoListItem>)(await controller.GetAsync(1, 2).ConfigureAwait(false))).Content;
@@ -61,6 +64,34 @@ namespace TodoList.Api.Tests.Controllers
                 // Assert
                 Assert.That(passedId, Is.EqualTo(2));
                 Assert.That(result, Is.EqualTo(items));
+            }
+        }
+
+        [TestFixture]
+        public class when_requesting_to_add_a_to_do_list_item
+        {
+            [Test]
+            public async Task then_should_add_the_requested_todo_list_item_to_the_requested_list()
+            {
+                // Arrange
+                var passedListId = (int?)null;
+                var passedName = (string)null;
+                var commandHandler = Mock.Of<IAsyncCommandHandler<IAddToDoListItemCommand>>();
+                Mock.Get(commandHandler)
+                    .Setup(handler => handler.HandleAsync(It.IsAny<IAddToDoListItemCommand>()))
+                    .Callback<IAddToDoListItemCommand>(command => { passedName = command.Name; passedListId = command.ListId; })
+                    .Returns(Task.FromResult(0));
+
+                var controller = new ToDoListItemsController(Mock.Of<IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>>>(),
+                    Mock.Of<IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem>>(), commandHandler);
+
+                // Act
+                var result = await controller.PostAsync(1, new CreateToDoListItemRequest { Name = "newitem" }).ConfigureAwait(false);
+
+                // Assert
+                Assert.That(result, Is.InstanceOf(typeof(OkResult)));
+                Assert.That(passedListId, Is.EqualTo(1));
+                Assert.That(passedName, Is.EqualTo("newitem"));
             }
         }
     }

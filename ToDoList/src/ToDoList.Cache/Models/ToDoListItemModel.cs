@@ -7,6 +7,11 @@ namespace ToDoList.Cache.Models
         public int Id { get; }
         public string Name { get; }
 
+        public ToDoListItemModel()
+        {
+
+        }
+
         public ToDoListItemModel(int id, string name)
         {
             Id = id;

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ToDoList.Api.Requests;
+using ToDoList.Domain.Commands;
 using ToDoList.Domain.Models;
 using ToDoList.Domain.Queries;
 
@@ -10,12 +12,15 @@ namespace ToDoList.Api.Controllers
     {
         private readonly IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>> _listItemsQueryHandler;
         private readonly IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> _listItemByIdQueryHandler;
+        private readonly IAsyncCommandHandler<IAddToDoListItemCommand> _addListItemCommandHandler;
 
         public ToDoListItemsController(IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>> listItemsQueryHandler,
-            IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> listItemByIdQueryHandler)
+            IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> listItemByIdQueryHandler,
+            IAsyncCommandHandler<IAddToDoListItemCommand> addListItemCommandHandler)
         {
             _listItemsQueryHandler = listItemsQueryHandler;
             _listItemByIdQueryHandler = listItemByIdQueryHandler;
+            _addListItemCommandHandler = addListItemCommandHandler;
         }
 
         [HttpGet]
@@ -32,6 +37,14 @@ namespace ToDoList.Api.Controllers
         {
             var item = await _listItemByIdQueryHandler.HandleAsync(new ToDoListItemByIdQuery(id)).ConfigureAwait(false);
             return Json(item);
+        }
+
+        [HttpPost]
+        [Route("api/ToDoLists/{listId}/Items")]
+        public async Task<IHttpActionResult> PostAsync(int listId, CreateToDoListItemRequest request)
+        {
+            await _addListItemCommandHandler.HandleAsync(new AddToDoListItemCommand(listId, request)).ConfigureAwait(false);
+            return Ok();
         }
 
         private class ToDoListItemsQuery : IToDoListItemsQuery
@@ -51,6 +64,18 @@ namespace ToDoList.Api.Controllers
             public ToDoListItemByIdQuery(int id)
             {
                 Id = id;
+            }
+        }
+
+        private class AddToDoListItemCommand : IAddToDoListItemCommand
+        {
+            public int ListId { get; }
+            public string Name { get; }
+
+            public AddToDoListItemCommand(int listId, CreateToDoListItemRequest request)
+            {
+                ListId = listId;
+                Name = request.Name;
             }
         }
     }
