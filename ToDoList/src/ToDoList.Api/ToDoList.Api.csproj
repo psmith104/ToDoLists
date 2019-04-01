@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="App_Start\DependencyContainer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ToDoListItemsController.cs" />
     <Compile Include="Controllers\ToDoListsController.cs" />
     <Compile Include="Filters\CheckModelForNullActionFilter.cs" />
     <Compile Include="Filters\ValidateModelStateActionFilter.cs" />
