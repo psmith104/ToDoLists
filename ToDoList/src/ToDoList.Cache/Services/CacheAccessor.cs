@@ -22,6 +22,8 @@ namespace ToDoList.Cache.Services
 
         public object Get(string key) => _memoryCache.Get(key);
 
+        public void Set(string key, object obj) => _memoryCache.Set(key, obj, new CacheItemPolicy());
+
         private class ToDoListModel : IToDoList
         {
             public int Id { get; set; }

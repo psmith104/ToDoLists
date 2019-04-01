@@ -6,12 +6,4 @@ namespace ToDoList.Domain.Commands
     {
         string Name { get; }
     }
-
-    public class AddToDoListCommandHandler : IAsyncCommandHandler<IAddToDoListCommand>
-    {
-        public Task HandleAsync(IAddToDoListCommand command)
-        {
-            return Task.FromResult(0);
-        }
-    }
 }

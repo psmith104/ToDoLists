@@ -2,6 +2,7 @@
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
 using System.Web.Http;
+using ToDoList.Cache.CommandHandlers;
 using ToDoList.Cache.QueryHandlers;
 using ToDoList.Cache.Services;
 using ToDoList.Domain.Commands;
