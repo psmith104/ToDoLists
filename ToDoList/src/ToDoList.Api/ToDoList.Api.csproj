@@ -100,6 +100,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\CreateToDoListItemRequest.cs" />
     <Compile Include="Requests\CreateToDoListRequest.cs" />
+    <Compile Include="Requests\UpdateToDoListItemRequest.cs" />
     <Compile Include="Requests\UpdateToDoListRequest.cs" />
   </ItemGroup>
   <ItemGroup>

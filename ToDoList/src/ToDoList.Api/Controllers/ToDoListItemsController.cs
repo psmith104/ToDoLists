@@ -14,16 +14,19 @@ namespace ToDoList.Api.Controllers
         private readonly IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> _listItemByIdQueryHandler;
         private readonly IAsyncCommandHandler<IAddToDoListItemCommand> _addListItemCommandHandler;
         private readonly IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> _toDoListByIdQueryHandler;
+        private readonly IAsyncCommandHandler<IUpdateToDoListItemCommand> _updateToDoListItemCommandHandler;
 
         public ToDoListItemsController(IAsyncQueryHandler<IToDoListItemsQuery, IEnumerable<IToDoListItem>> listItemsQueryHandler,
             IAsyncQueryHandler<IToDoListItemByIdQuery, IToDoListItem> listItemByIdQueryHandler,
             IAsyncCommandHandler<IAddToDoListItemCommand> addListItemCommandHandler,
-            IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler)
+            IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler,
+            IAsyncCommandHandler<IUpdateToDoListItemCommand> updateToDoListItemCommandHandler)
         {
             _listItemsQueryHandler = listItemsQueryHandler;
             _listItemByIdQueryHandler = listItemByIdQueryHandler;
             _addListItemCommandHandler = addListItemCommandHandler;
             _toDoListByIdQueryHandler = toDoListByIdQueryHandler;
+            _updateToDoListItemCommandHandler = updateToDoListItemCommandHandler;
         }
 
         [HttpGet]
@@ -50,6 +53,17 @@ namespace ToDoList.Api.Controllers
             if (list == null) return BadRequest("Could not retrieve requested To Do List");
 
             await _addListItemCommandHandler.HandleAsync(new AddToDoListItemCommand(listId, request)).ConfigureAwait(false);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("api/ToDoLists/{listId}/Items/{id}")]
+        public async Task<IHttpActionResult> PutAsync(int listId, int id, UpdateToDoListItemRequest request)
+        {
+            var list = await _listItemByIdQueryHandler.HandleAsync(new ToDoListItemByIdQuery(id)).ConfigureAwait(false);
+            if (list == null) return BadRequest("Could not retrieve requested To Do List");
+
+            await _updateToDoListItemCommandHandler.HandleAsync(new UpdateToDoListItemCommand(id, request)).ConfigureAwait(false);
             return Ok();
         }
 
@@ -91,6 +105,18 @@ namespace ToDoList.Api.Controllers
             public AddToDoListItemCommand(int listId, CreateToDoListItemRequest request)
             {
                 ListId = listId;
+                Name = request.Name;
+            }
+        }
+
+        private class UpdateToDoListItemCommand : IUpdateToDoListItemCommand
+        {
+            public int Id { get; }
+            public string Name { get; }
+
+            public UpdateToDoListItemCommand(int id, UpdateToDoListItemRequest request)
+            {
+                Id = id;
                 Name = request.Name;
             }
         }

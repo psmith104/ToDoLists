@@ -5,7 +5,7 @@ namespace ToDoList.Cache.Models
     public class ToDoListItemModel : IToDoListItem
     {
         public int Id { get; }
-        public string Name { get; }
+        public string Name { get; set; }
 
         public ToDoListItemModel()
         {

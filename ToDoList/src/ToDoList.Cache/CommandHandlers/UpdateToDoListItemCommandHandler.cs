@@ -8,20 +8,21 @@ using ToDoList.Domain.Commands;
 
 namespace ToDoList.Cache.CommandHandlers
 {
-    public class UpdateToDoListCommandHandler : IAsyncCommandHandler<IUpdateToDoListCommand>
+    public class UpdateToDoListItemCommandHandler : IAsyncCommandHandler<IUpdateToDoListItemCommand>
     {
         private readonly ICacheAccessor _cacheAccessor;
 
-        public UpdateToDoListCommandHandler(ICacheAccessor cacheAccessor)
+        public UpdateToDoListItemCommandHandler(ICacheAccessor cacheAccessor)
         {
             _cacheAccessor = cacheAccessor;
         }
 
-        public Task HandleAsync(IUpdateToDoListCommand command)
+        public Task HandleAsync(IUpdateToDoListItemCommand command)
         {
             var lists = (IList<ToDoListModel>)_cacheAccessor.Get(CacheKeys.ToDoLists);
-            var listToUpdate = lists.Single(list => list.Id.Equals(command.Id));
-            listToUpdate.Name = command.Name;
+            var allItems = lists.SelectMany(ls => ls.Items);
+            var itemToUpdate = (ToDoListItemModel) allItems.Single(itm => itm.Id.Equals(command.Id));
+            itemToUpdate.Name = command.Name;
             return Task.FromResult(0);
         }
     }
