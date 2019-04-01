@@ -24,8 +24,6 @@ namespace ToDoLists.Cache.Tests.CommandHandlers
             {
                 // Arrange
                 var passedGetKey = (string) null;
-                var passedSetKey = (string) null;
-                var passedObject = (object) null;
                 var listToUpdate = Mock.Of<ToDoListModel>(list => list.Id == 1);
                 var lists = new List<ToDoListModel> { listToUpdate };
                 var cacheAccessor = Mock.Of<ICacheAccessor>();
@@ -33,9 +31,6 @@ namespace ToDoLists.Cache.Tests.CommandHandlers
                     .Setup(accessor => accessor.Get(It.IsAny<string>()))
                     .Callback<string>(key => passedGetKey = key)
                     .Returns(lists);
-                Mock.Get(cacheAccessor)
-                    .Setup(accessor => accessor.Set(It.IsAny<string>(), It.IsAny<object>()))
-                    .Callback<string, object>((key, obj) => { passedSetKey = key; passedObject = obj; });
 
                 var queryHandler = new UpdateToDoListCommandHandler(cacheAccessor);
 
@@ -44,8 +39,6 @@ namespace ToDoLists.Cache.Tests.CommandHandlers
 
                 // Assert
                 Assert.That(passedGetKey, Is.EqualTo(CacheKeys.ToDoLists));
-                Assert.That(passedSetKey, Is.EqualTo(CacheKeys.ToDoLists));
-                Assert.That(passedObject, Is.EqualTo(lists));
                 Assert.That(listToUpdate.Name, Is.EqualTo("test"));
             }
         }

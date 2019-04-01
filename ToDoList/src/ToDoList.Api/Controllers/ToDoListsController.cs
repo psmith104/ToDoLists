@@ -56,7 +56,10 @@ namespace ToDoList.Api.Controllers
         [Route("api/ToDoLists/{id}")]
         public async Task<IHttpActionResult> PutAsync(int id, [FromBody]UpdateToDoListRequest request)
         {
-            await _updateListCommandHandler.HandleAsync(new UpdateToDoListCommand(id, request));
+            var list = await _toDoListByIdQueryHandler.HandleAsync(new ToDoListByIdQuery(id)).ConfigureAwait(false);
+            if (list == null) return BadRequest("Could not retrieve requested To Do List");
+
+            await _updateListCommandHandler.HandleAsync(new UpdateToDoListCommand(id, request)).ConfigureAwait(false);
             return Ok();
         }
 

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Caching;
-using ToDoList.Domain.Models;
 using ToDoList.Cache.Helpers;
 using ToDoList.Cache.Models;
 

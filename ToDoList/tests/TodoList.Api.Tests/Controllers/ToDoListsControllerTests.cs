@@ -97,9 +97,14 @@ namespace TodoList.Api.Tests.Controllers
             public async Task then_should_update_the_requested_todo_list()
             {
                 // Arrange
+                var list = Mock.Of<IToDoList>();
+                var queryHandler = Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>();
+                Mock.Get(queryHandler)
+                    .Setup(handler => handler.HandleAsync(It.IsAny<IToDoListByIdQuery>()))
+                    .ReturnsAsync(list);
+
                 var passedId = (int?) null;
                 var passedName = (string) null;
-                var list = Mock.Of<IToDoList>();
                 var commandHandler = Mock.Of<IAsyncCommandHandler<IUpdateToDoListCommand>>();
                 Mock.Get(commandHandler)
                     .Setup(handler => handler.HandleAsync(It.IsAny<IUpdateToDoListCommand>()))
@@ -107,7 +112,7 @@ namespace TodoList.Api.Tests.Controllers
                     .Returns(Task.FromResult(0));
 
                 var controller = new ToDoListsController(Mock.Of<IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>>>(),
-                    Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>(), Mock.Of<IAsyncCommandHandler<IAddToDoListCommand>>(), commandHandler);
+                    queryHandler, Mock.Of<IAsyncCommandHandler<IAddToDoListCommand>>(), commandHandler);
 
                 // Act
                 var result = await controller.PutAsync(1, new UpdateToDoListRequest { Name = "mylist" }).ConfigureAwait(false);
@@ -116,6 +121,31 @@ namespace TodoList.Api.Tests.Controllers
                 Assert.That(result, Is.InstanceOf(typeof(OkResult)));
                 Assert.That(passedId, Is.EqualTo(1));
                 Assert.That(passedName, Is.EqualTo("mylist"));
+            }
+
+            [Test]
+            public async Task then_should_return_a_bad_request_response_given_the_to_do_list_could_not_be_found()
+            {
+                // Arrange
+                var passedId = (int?)null;
+                var queryHandler = Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>();
+                Mock.Get(queryHandler)
+                    .Setup(handler => handler.HandleAsync(It.IsAny<IToDoListByIdQuery>()))
+                    .Callback<IToDoListByIdQuery>(query => passedId = query.Id)
+                    .ReturnsAsync((IToDoList) null);
+
+                var commandHandler = Mock.Of<IAsyncCommandHandler<IUpdateToDoListCommand>>();
+
+                var controller = new ToDoListsController(Mock.Of<IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>>>(),
+                    queryHandler, Mock.Of<IAsyncCommandHandler<IAddToDoListCommand>>(), commandHandler);
+
+                // Act
+                var result = ((BadRequestErrorMessageResult) await controller.PutAsync(1, new UpdateToDoListRequest()).ConfigureAwait(false)).Message;
+
+                // Assert
+                Mock.Get(commandHandler).Verify(handler => handler.HandleAsync(It.IsAny<IUpdateToDoListCommand>()), Times.Never);
+                Assert.That(result, Is.EqualTo("Could not retrieve requested To Do List"));
+                Assert.That(passedId, Is.EqualTo(1));
             }
         }
     }
