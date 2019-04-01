@@ -22,7 +22,8 @@ namespace ToDoList.Cache.CommandHandlers
         public Task HandleAsync(IAddToDoListCommand command)
         {
             var lists = (IList<IToDoList>)_cacheAccessor.Get(CacheKeys.ToDoLists);
-            lists.Add(new ToDoListModel(3, command.Name));
+            var maxId = lists.Max(list => list.Id);
+            lists.Add(new ToDoListModel(maxId + 1, command.Name));
             _cacheAccessor.Set(CacheKeys.ToDoLists, lists);
             return Task.FromResult(0);
         }
