@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ToDoList.Api.Requests;
+using ToDoList.Domain.Commands;
 using ToDoList.Domain.Models;
 using ToDoList.Domain.Queries;
 
@@ -10,12 +12,16 @@ namespace ToDoList.Api.Controllers
     {
         private readonly IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> _allToDoListsQueryHandler;
         private readonly IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> _toDoListByIdQueryHandler;
+        private readonly IAsyncCommandHandler<IAddToDoListCommand> _addListCommandHandler;
 
         public ToDoListsController(IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> allToDoListsQueryHandler,
-            IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler)
+            IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler,
+            IAsyncCommandHandler<IAddToDoListCommand> addListCommandHandler)
         {
             _allToDoListsQueryHandler = allToDoListsQueryHandler;
             _toDoListByIdQueryHandler = toDoListByIdQueryHandler;
+            _addListCommandHandler = addListCommandHandler;
+
         }
 
         [HttpGet]
@@ -34,9 +40,12 @@ namespace ToDoList.Api.Controllers
             return Json(list);
         }
 
-        // POST: api/ToDoLists
-        public void Post([FromBody]string value)
+        [HttpPost]
+        [Route("api/ToDoLists")]
+        public async Task<IHttpActionResult> PostAsync([FromBody]CreateToDoListRequest request)
         {
+            await _addListCommandHandler.HandleAsync(request).ConfigureAwait(false);
+            return Ok();
         }
 
         // PUT: api/ToDoLists/5
