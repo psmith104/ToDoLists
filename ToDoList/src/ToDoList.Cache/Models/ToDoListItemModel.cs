@@ -4,10 +4,12 @@ namespace ToDoList.Cache.Models
 {
     public class ToDoListItemModel : IToDoListItem
     {
+        public int Id { get; }
         public string Name { get; }
 
-        public ToDoListItemModel(string name)
+        public ToDoListItemModel(int id, string name)
         {
+            Id = id;
             Name = name;
         }
     }

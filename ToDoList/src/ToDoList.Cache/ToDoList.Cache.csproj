@@ -49,6 +49,7 @@
     <Compile Include="QueryHandlers\AllToDoListsQueryHandler.cs" />
     <Compile Include="QueryHandlers\IToDoList.cs" />
     <Compile Include="QueryHandlers\ToDoListByIdQueryHandler.cs" />
+    <Compile Include="QueryHandlers\ToDoListItemByIdQueryHandler.cs" />
     <Compile Include="QueryHandlers\ToDoListItemsQueryHandler.cs" />
     <Compile Include="Services\CacheAccessor.cs" />
     <Compile Include="Services\ICacheAccessor.cs" />

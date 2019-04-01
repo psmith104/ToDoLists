@@ -53,6 +53,7 @@
     <Compile Include="Queries\IAllToDoListsQuery.cs" />
     <Compile Include="Queries\IQuery.cs" />
     <Compile Include="Queries\IToDoListByIdQuery.cs" />
+    <Compile Include="Queries\IToDoListItemByIdQuery.cs" />
     <Compile Include="Queries\IToDoListItemsQuery.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,6 +2,7 @@
 {
     public interface IToDoListItem
     {
+        int Id { get; }
         string Name { get; }
     }
 }

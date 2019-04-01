@@ -16,11 +16,11 @@ namespace ToDoList.Cache.Services
             {
                 var list1 = new ToDoListModel { Id = 1, Name = "Nursery" };
                 var items1 = (List<ToDoListItemModel>) list1.Items;
-                items1.Add(new ToDoListItemModel("Paint"));
-                items1.Add(new ToDoListItemModel("Build Furniture"));
+                items1.Add(new ToDoListItemModel(1, "Paint"));
+                items1.Add(new ToDoListItemModel(3, "Build Furniture"));
                 var list2 = new ToDoListModel { Id = 2, Name = "Yard" };
                 var items2 = (List<ToDoListItemModel>)list2.Items;
-                items2.Add(new ToDoListItemModel("Remove Gate"));
+                items2.Add(new ToDoListItemModel(2, "Remove Gate"));
                 var lists = new List<ToDoListModel> { list1, list2 };
                 _memoryCache.AddOrGetExisting(CacheKeys.ToDoLists, lists, new CacheItemPolicy());
             }
