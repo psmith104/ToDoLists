@@ -28,9 +28,9 @@ namespace ToDoList.Api
         {
             _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            RegisterDependencies();
-
             _container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+
+            RegisterDependencies();
 
             GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(_container);
         }

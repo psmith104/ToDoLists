@@ -8,25 +8,30 @@ namespace ToDoList.Api.Controllers
 {
     public class ToDoListsController : ApiController
     {
-        private readonly IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> _allTodoListsQueryHandler;
+        private readonly IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> _allToDoListsQueryHandler;
+        private readonly IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> _toDoListByIdQueryHandler;
 
-        public ToDoListsController(IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> allTodoListsQueryHandler)
+        public ToDoListsController(IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>> allToDoListsQueryHandler,
+            IAsyncQueryHandler<IToDoListByIdQuery, IToDoList> toDoListByIdQueryHandler)
         {
-            _allTodoListsQueryHandler = allTodoListsQueryHandler;
+            _allToDoListsQueryHandler = allToDoListsQueryHandler;
+            _toDoListByIdQueryHandler = toDoListByIdQueryHandler;
         }
 
         [HttpGet]
         [Route("api/ToDoLists")]
         public async Task<IHttpActionResult> GetAsync()
         {
-            var lists = await _allTodoListsQueryHandler.HandleAsync(new AllToDoListQuery()).ConfigureAwait(false);
+            var lists = await _allToDoListsQueryHandler.HandleAsync(new AllToDoListQuery()).ConfigureAwait(false);
             return Json(lists);
         }
 
-        // GET: api/ToDoLists/5
-        public string Get(int id)
+        [HttpGet]
+        [Route("api/ToDoLists/{id}")]
+        public async Task<IHttpActionResult> GetAsync(int id)
         {
-            return "value";
+            var list = await _toDoListByIdQueryHandler.HandleAsync(new ToDoListByIdQuery(id)).ConfigureAwait(false);
+            return Json(list);
         }
 
         // POST: api/ToDoLists
@@ -45,5 +50,15 @@ namespace ToDoList.Api.Controllers
         }
 
         private class AllToDoListQuery : IAllToDoListsQuery { }
+
+        private class ToDoListByIdQuery : IToDoListByIdQuery
+        {
+            public int Id { get; }
+
+            public ToDoListByIdQuery(int id)
+            {
+                Id = id;
+            }
+        }
     }
 }

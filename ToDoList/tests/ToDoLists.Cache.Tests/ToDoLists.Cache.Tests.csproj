@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryHandlers\ToDoListByIdQueryHandlerTests.cs" />
     <Compile Include="QueryHandlers\AllToDoListsQueryHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>

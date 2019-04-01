@@ -3,5 +3,6 @@
     public interface IToDoList
     {
         string Name { get; }
+        int Id { get; }
     }
 }

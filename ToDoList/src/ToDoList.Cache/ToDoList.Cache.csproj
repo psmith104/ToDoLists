@@ -43,6 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryHandlers\AllToDoListsQueryHandler.cs" />
     <Compile Include="QueryHandlers\IToDoList.cs" />
+    <Compile Include="QueryHandlers\ToDoListByIdQueryHandler.cs" />
     <Compile Include="Services\CacheAccessor.cs" />
     <Compile Include="Services\ICacheAccessor.cs" />
   </ItemGroup>

@@ -16,7 +16,7 @@ namespace ToDoList.Cache.QueryHandlers
             _cache = cache;
         }
 
-        public Task<IEnumerable<IToDoList>> HandleAsync(IAllToDoListsQuery getAllToDoListsQuery)
+        public Task<IEnumerable<IToDoList>> HandleAsync(IAllToDoListsQuery query)
         {
             var list = _cache.Get(CacheKeys.ToDoLists);
             return Task.FromResult((IEnumerable<IToDoList>) list);

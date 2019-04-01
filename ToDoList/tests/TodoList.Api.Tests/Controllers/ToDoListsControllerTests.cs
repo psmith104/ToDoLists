@@ -24,13 +24,38 @@ namespace TodoList.Api.Tests.Controllers
                     .Setup(handler => handler.HandleAsync(It.IsAny<IAllToDoListsQuery>()))
                     .ReturnsAsync(lists);
 
-                var controller = new ToDoListsController(queryHandler);
+                var controller = new ToDoListsController(queryHandler, Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>());
 
                 // Act
                 var result = ((JsonResult<IEnumerable<IToDoList>>) (await controller.GetAsync().ConfigureAwait(false))).Content;
 
                 // Assert
                 Assert.That(result, Is.EqualTo(lists));
+            }
+        }
+
+        [TestFixture]
+        public class when_requesting_a_single_todo_list
+        {
+            [Test]
+            public async Task then_should_retreive_the_requested_todo_list()
+            {
+                // Arrange
+                var passedId = (int?) null;
+                var list = Mock.Of<IToDoList>();
+                var queryHandler = Mock.Of<IAsyncQueryHandler<IToDoListByIdQuery, IToDoList>>();
+                Mock.Get(queryHandler)
+                    .Setup(handler => handler.HandleAsync(It.IsAny<IToDoListByIdQuery>()))
+                    .Callback<IToDoListByIdQuery>(query => passedId = query.Id)
+                    .ReturnsAsync(list);
+
+                var controller = new ToDoListsController(Mock.Of<IAsyncQueryHandler<IAllToDoListsQuery, IEnumerable<IToDoList>>>(), queryHandler);
+
+                // Act
+                var result = ((JsonResult<IToDoList>)(await controller.GetAsync(2).ConfigureAwait(false))).Content;
+
+                // Assert
+                Assert.That(passedId, Is.EqualTo(2));
             }
         }
     }

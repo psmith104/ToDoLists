@@ -9,7 +9,7 @@ namespace ToDoList.Api
         {
             // Setup DI
             var container = new DependencyContainer();
-            container.RegisterDependencies();
+            container.SetupConatiner();
 
             // Web API routes
             config.MapHttpAttributeRoutes();

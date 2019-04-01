@@ -46,6 +46,7 @@
     <Compile Include="Queries\IAsyncQueryHandler.cs" />
     <Compile Include="Queries\IAllToDoListsQuery.cs" />
     <Compile Include="Queries\IQuery.cs" />
+    <Compile Include="Queries\IToDoListByIdQuery.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

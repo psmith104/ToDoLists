@@ -15,7 +15,7 @@ namespace ToDoList.Cache.Services
             // Add default values
             if (!_memoryCache.Contains(CacheKeys.ToDoLists))
             {
-                var lists = new List<IToDoList> { new ToDoListModel { Name = "List1" }, new ToDoListModel { Name = "List2" } };
+                var lists = new List<IToDoList> { new ToDoListModel { Id=1, Name = "List1" }, new ToDoListModel { Id=2, Name = "List2" } };
                 _memoryCache.AddOrGetExisting(CacheKeys.ToDoLists, lists, new CacheItemPolicy());
             }
         }
@@ -24,6 +24,7 @@ namespace ToDoList.Cache.Services
 
         private class ToDoListModel : IToDoList
         {
+            public int Id { get; set; }
             public string Name { get; set; }
         }
     }
