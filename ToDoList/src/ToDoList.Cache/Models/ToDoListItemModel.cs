@@ -6,6 +6,7 @@ namespace ToDoList.Cache.Models
     {
         public int Id { get; }
         public string Name { get; set; }
+        public bool IsCompleted { get; set; }
 
         public ToDoListItemModel()
         {

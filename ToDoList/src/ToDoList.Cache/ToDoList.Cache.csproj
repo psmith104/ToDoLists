@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="CommandHandlers\AddToDoListCommandHandler.cs" />
     <Compile Include="CommandHandlers\AddToDoListItemCommandHandler.cs" />
+    <Compile Include="CommandHandlers\CompleteToDoListItemCommandHandler.cs" />
     <Compile Include="CommandHandlers\DeleteToDoListCommandHandler.cs" />
     <Compile Include="CommandHandlers\DeleteToDoListItemCommandHandler.cs" />
     <Compile Include="CommandHandlers\UpdateToDoListCommandHandler.cs" />
